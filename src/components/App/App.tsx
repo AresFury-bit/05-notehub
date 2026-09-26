@@ -52,14 +52,13 @@ export default function App() {
         </button>
         {isLoading && <Loader />}
         {isModal && (
-          <Modal
-            onClose={closeModal}
-            children={<NoteForm onClose={() => setIsModal(false)} />}
-          />
+          <Modal onClose={closeModal}>
+            <NoteForm onClose={() => setIsModal(false)} />
+          </Modal>
         )}
         {isError && <ErrorMessage />}
       </header>
-      {data && data.notes.length > 1 && <NoteList notes={data.notes} />}
+      {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
     </div>
   );
 }

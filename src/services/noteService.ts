@@ -10,7 +10,7 @@ interface FetchNotesResponse{
 }
 
 
-export const fetchNotes = async( page:number, search?:string) => {
+export const fetchNotes = async( page:number, search?:string):Promise<FetchNotesResponse> => {
     const res = await axios.get<FetchNotesResponse>("https://notehub-public.goit.study/api/notes", {
         params: {
             search: search,
@@ -24,8 +24,8 @@ export const fetchNotes = async( page:number, search?:string) => {
     return res.data;
 }
 
-export const createNote = async(newNotes:NewNote) => {
-    const res = await axios.post<Note>("https://notehub-public.goit.study/api/notes", newNotes, {
+export const createNote = async(newNote:NewNote) => {
+    const res = await axios.post<Note>("https://notehub-public.goit.study/api/notes", newNote, {
         headers: {
             Authorization: `Bearer ${API_KEY}`
         }

@@ -10,15 +10,15 @@ interface NoteListProps {
 export default function NoteList({ notes }: NoteListProps) {
   const queryClient = useQueryClient();
 
-  const mutationDelite = useMutation({
+  const mutationDelete = useMutation({
     mutationFn: (id: string) => deleteNote(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
     },
   });
 
-  const handleDelite = (id: string) => {
-    mutationDelite.mutate(id);
+  const handleDelete = (id: string) => {
+    mutationDelete.mutate(id);
   };
 
   return (
@@ -31,7 +31,7 @@ export default function NoteList({ notes }: NoteListProps) {
             <span className={css.tag}>{note.tag}</span>
             <button
               className={css.button}
-              onClick={() => handleDelite(note.id)}
+              onClick={() => handleDelete(note.id)}
             >
               Delete
             </button>

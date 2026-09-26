@@ -26,7 +26,7 @@ const OrderFormSchema = Yup.object().shape({
     .min(3, "Title must be at least 3 characters")
     .required()
     .max(50, "Title is too long"),
-  content: Yup.string().max(500, "Title is too content"),
+  content: Yup.string().max(500, "Content is too long"),
   tag: Yup.string<NoteTag>().required(),
 });
 
@@ -36,6 +36,7 @@ export const NoteForm = ({ onClose }: NoteFormProps) => {
     mutationFn: (newNote: OrderFormValue) => createNote(newNote),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
+      onClose();
     },
   });
 
