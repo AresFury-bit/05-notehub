@@ -1,16 +1,18 @@
 import css from "./NoteForm.module.css";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import type { NoteTag } from "../../types/note";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createNote } from "../../services/noteService";
 
 interface NoteFormProps {
-  valuesForm: (values: OrderFormValue) => void;
   onClose: () => void;
 }
 
 export interface OrderFormValue {
   title: string;
   content: string;
-  tag: "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
+  tag: NoteTag;
 }
 
 const initialValues: OrderFormValue = {
@@ -25,15 +27,27 @@ const OrderFormSchema = Yup.object().shape({
     .required()
     .max(50, "Title is too long"),
   content: Yup.string().max(500, "Title is too content"),
-  tag: Yup.string<
-    "Todo" | "Work" | "Personal" | "Meeting" | "Shopping"
-  >().required(),
+  tag: Yup.string<NoteTag>().required(),
 });
 
-export const NoteForm = ({ valuesForm, onClose }: NoteFormProps) => {
-  const handleSubmit = (values: OrderFormValue) => {
-    valuesForm(values);
+export const NoteForm = ({ onClose }: NoteFormProps) => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (newNote: OrderFormValue) => createNote(newNote),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
+  });
+
+  const handleSubmitForm = (values: OrderFormValue) => {
+    console.log(values);
+    mutation.mutate({
+      title: values.title,
+      content: values.content,
+      tag: values.tag,
+    });
   };
+
   const handleCancelbutton = () => {
     onClose();
   };
@@ -41,7 +55,7 @@ export const NoteForm = ({ valuesForm, onClose }: NoteFormProps) => {
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmitForm}
       validationSchema={OrderFormSchema}
     >
       <Form className={css.form}>
